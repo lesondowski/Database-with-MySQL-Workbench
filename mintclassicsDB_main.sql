@@ -1,9 +1,9 @@
--- tổng số lượng tồn kho ở mỗi kho
+-- total inventory quantity in each warehouse
 
 select warehouses.warehouseCode , sum(warehouses.quantityInStock) as total_quantityInStock from products warehouses
 group by warehouses.warehouseCode;
 
--- tổng Sức chứa mỗi kho
+-- total Capacity per warehouse
 select 
 	warehouses.warehouseCode,
     Sum(CAST(SUBSTRING_INDEX(products.productScale, ':', 1) as float4) /  CAST(SUBSTRING_INDEX(products.productScale, ':', -1) AS float4) * products.quantityInStock)
@@ -18,14 +18,14 @@ from orderdetails
 join products on orderdetails.productCode = products.productCode
 group by products.productName;
 
--- khu vực bán hàng
+-- sales area
 select customers.country, COUNT(orders.orderNumber) AS total_orders
 from customers 
 join orders  on customers.customerNumber = orders.customerNumber
 group by  customers.country
 order by total_orders desc;
 
--- Nhóm khách hàng
+-- Customer group
 
 select customers.customerName, COUNT(orders.orderNumber) AS total_orders
 from customers 
@@ -34,13 +34,13 @@ group by customers.customerName
 order by total_orders desc	
 limit 24;
 
--- Giao hàng và đơn hàng bị hủy
+-- Delivery and order canceled
 
 select orders.status, COUNT(orderNumber) AS total_orders
 from orders
 group by orders.status;
 
--- các sản phẩm có thể được mua cùng nhau
+-- products can be purchased together
 SELECT 
     order1.productCode AS product1, order2.productCode AS product2, COUNT(*) AS frequency
 FROM 
@@ -50,7 +50,7 @@ GROUP BY product1, product2
 ORDER BY frequency DESC
 limit 20;
 
--- doanh so ban hang theo ngay
+-- Sales of sales numbers follow immediately
 SELECT 
     DATE(orders.orderDate) AS order_date, 
     COUNT(orders.orderNumber) AS total_orders, 
